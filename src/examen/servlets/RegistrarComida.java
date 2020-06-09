@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import emaxen.dao.ComidaDAO;
 import emaxen.dao.DAOFactory;
+import emaxen.dao.PedidoDAO;
 import examen.entidad.Comida;
 
 /**
@@ -32,11 +33,14 @@ public class RegistrarComida extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		ComidaDAO comidadao = DAOFactory.getFactory().getComidaDAO();
+		PedidoDAO pedidodao = DAOFactory.getFactory().getPedidoDAO();
 		
 		if (request.getParameter("id") != null) {
 		int id = Integer.parseInt(request.getParameter("id"));
 		Comida comidapedido = comidadao.read(id);
+		
 		System.out.println("esta es la comida" + comidapedido);
+		//Comida comida1 = new Comida(comidapedido.getNombre(),comidapedido.getPreciounitario(),id);
 			
 		} else {
 			
