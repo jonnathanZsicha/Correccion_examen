@@ -12,11 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
+
 import emaxen.dao.ComidaDAO;
 import emaxen.dao.DAOFactory;
 import emaxen.dao.PedidoDAO;
+import emaxen.dao.TarjetaCreditoDAO;
 import examen.entidad.Comida;
 import examen.entidad.Pedido;
+import examen.entidad.TarjetaCredito;
 
 /**
  * Servlet implementation class RegistrarPedido
@@ -41,23 +45,31 @@ public class RegistrarPedido extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		PedidoDAO pedidoDAO = DAOFactory.getFactory().getPedidoDAO();
 		ComidaDAO comidaDAO = DAOFactory.getFactory().getComidaDAO();
-		double tota = Double.parseDouble(request.getParameter("total"));
+		TarjetaCreditoDAO tarjetaDAO = DAOFactory.getFactory().getTarjetaCreditoDAO();
 		
+		double tota = Double.parseDouble(request.getParameter("total"));
 		SimpleDateFormat formato = new SimpleDateFormat("yyy/MM/dd");
+		TarjetaCredito tarjeta =tarjetaDAO.findByNumero(request.getParameter("tarjeta"));
+		System.out.println(tarjeta);
+		
 		 try {
 			fec = formato.parse(request.getParameter("fecha"));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Pedido pedido = new Pedido(fec,request.getParameter("nombre") ,tota, request.getParameter("observaciones"));
+		Pedido pedido = new Pedido(fec,request.getParameter("nombre") ,tota, request.getParameter("observaciones"),tarjeta);
 		pedidoDAO.create(pedido);
+		List<Comida>comidas=comidaDAO.findByVacio(null);
+		for (Comida comida : comidas) {
+			Comida comidaupdate = new Comida(comida.getNombre(), comida.getPreciounitario(), pedido);
+			comidaDAO.update(comidaupdate);
+			
+		}
 		System.out.println("Se ha creado exitosamente el pedido");
-		List<Comida>comidas=comidaDAO.readAll();
 		
-		request.setAttribute("comidas", comidas);
-		
-		System.out.println("aqui estan las comidas" + comidas);
+		List<Pedido>pedidos=pedidoDAO.readAll();
+		request.setAttribute("pedidos", pedidos);
 		
 		request.getRequestDispatcher( "/JSP/ListComidas.jsp" ).forward( request, response );
 		

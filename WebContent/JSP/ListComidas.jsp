@@ -21,13 +21,24 @@
                     </ul>
                 </nav>
             </header>
-            <br>
+            
+            <form  name='sesion' action='<%=request.getContextPath()%>/Busqueda' method='get'>
+             
+                      <fieldset>
+                       
+                        <input type="text" name="busqueda"  alt=""/><br />
+                        <input  name="comida" type="submit"  value="comida"/>
+                        <input name="tarjeta" type="submit" value="tarjeta"/>
+                        </fieldset>
+            </form>
+                        
+                    
 
             <div class="row">
                 <!-- <div class="alert alert-success" *ngIf='message'>{{message}}</div> -->
 
                 <div class="container">
-                    <h3 class="text-center">Lista de Comidas Disponibles</h3>
+                    <h3 class="text-center">Lista de Pedidos</h3>
                     <hr>
                     <div class="container text-left">
 
@@ -37,13 +48,36 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Precio Unitario</th>
-                                <th>Al pedido</th>
+                            
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Observaciones</th>
+                                <th>Total</th>
+                                	
+                                
                             </tr>
                         </thead>
                         <tbody>
                             <!--   for (Todo todo: todos) {  -->
+                            
+                             <c:forEach var="pedido" items="${pedidos}">
+
+                                <tr>
+                                    <td>
+                                        <c:out value="${pedido.cliente}" />
+                                    </td>
+                                    <td>
+                                        <c:out value="${pedido.fecha}" />
+                                    </td>
+                                      <td>
+                                        <c:out value="${pedido.observaciones}" />
+                                    </td>
+                                                                          <td>
+                                        <c:out value="${pedido.total}" />
+                                    </td>
+                                </tr>
+                                
+                            </c:forEach>
                 
                 			
                             <c:forEach var="comida" items="${comidas}">
@@ -57,6 +91,7 @@
                                     </td>
                                     <td><a  class="btn btn-success" href="<%=request.getContextPath()%>/RegistrarComida?id=<c:out value='${comida.numero}' />">Agregar</a> &nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 </tr>
+                                
                             </c:forEach>
                             <!-- } -->
                         </tbody>

@@ -1,9 +1,7 @@
 package examen.servlets;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,22 +9,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import emaxen.dao.ComidaDAO;
 import emaxen.dao.DAOFactory;
+import emaxen.dao.PedidoDAO;
 import emaxen.dao.TarjetaCreditoDAO;
-import examen.entidad.TarjetaCredito;
+import examen.entidad.Comida;
+import examen.entidad.Pedido;
 
 /**
- * Servlet implementation class RegistrarTarjeta
+ * Servlet implementation class Busquedas
  */
-@WebServlet("/RegistrarTarjeta")
-public class RegistrarTarjeta extends HttpServlet {
+@WebServlet("/Busqueda")
+public class Busquedas extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Date fec;
+	private List<Pedido>pedidos;
+	private String url;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RegistrarTarjeta() {
+    public Busquedas() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,26 +38,27 @@ public class RegistrarTarjeta extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		TarjetaCreditoDAO tajetadao = DAOFactory.getFactory().getTarjetaCreditoDAO();
 		
+		TarjetaCreditoDAO tarjetadao = DAOFactory.getFactory().getTarjetaCreditoDAO();
+		ComidaDAO comidadao = DAOFactory.getFactory().getComidaDAO();
+		PedidoDAO pedidodao = DAOFactory.getFactory().getPedidoDAO();
 		
-		
-		SimpleDateFormat formato = new SimpleDateFormat("yyy/MM/dd");
-		 try {
-			fec = formato.parse("2024/01/23");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (request.getParameter("nombre") != null) {
+			String busqueda = request.getParameter("busqueda");
+			pedidos=pedidodao.findByComida(busqueda);
+			request.setAttribute("pedidos", pedidos);
+			url="/JSP/ListComidas.jsp" ;
+			
+			
+		}else if (request.getParameter("tarjeta")!=null) {
+			String busqueda = request.getParameter("busqueda");
+			pedidos=pedidodao.findByTarjeta(busqueda);
+			request.setAttribute("pedidos", pedidos);
+			url="/JSP/ListComidas.jsp" ;
+			
 		}
+		getServletContext().getRequestDispatcher(url).forward(request, response);
 		
-		TarjetaCredito tarjeta = new TarjetaCredito(1, "1010-1010", "Jonnathan Sicha", fec, 180);
-		tajetadao.create(tarjeta);
-		TarjetaCredito tarjeta1 = new TarjetaCredito(2, "2020-2020", "Daniel Rodriguez", fec, 190);
-		tajetadao.create(tarjeta1);
-		TarjetaCredito tarjeta2 = new TarjetaCredito(3, "3030-3030", "Juan Saltos", fec, 200);
-		
-		tajetadao.create(tarjeta2);
 	}
 
 	/**

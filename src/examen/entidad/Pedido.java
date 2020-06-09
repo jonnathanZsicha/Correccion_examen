@@ -36,11 +36,12 @@ public class Pedido implements Serializable {
 	public Pedido() {
 		super();
 	}
-	public Pedido(Date fecha,String cliente,double total,String observaciones) {
+	public Pedido(Date fecha,String cliente,double total,String observaciones ,TarjetaCredito tarjeta) {
 		this.fecha = fecha;
 		this.cliente = cliente;
 		this.total = total;
 		this.observaciones= observaciones;
+		this.tarjeta=tarjeta;
 	}
 	public int getNumero() {
 		return numero;
